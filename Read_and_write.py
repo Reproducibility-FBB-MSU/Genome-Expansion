@@ -4,7 +4,7 @@ from Bio import AlignIO
 import pandas as pd
 import re
 
-a = AlignIO.parse(str(" "), "maf") # здесь нужен адресс MAF файла
+a = AlignIO.parse(str(" "), "maf") # MAF-file adress
 final_list = []
 for i in a:
     result = pd.DataFrame()
