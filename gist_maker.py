@@ -3,7 +3,7 @@ import re
 import collections
 import matplotlib.pyplot as plt
 
-def inter(list1, list2):
+def inter(list1, list2): # function to deal with intersection between transposons and simple repeats issues
     if len(list1) == 2 and len(list2) == 2:
         if set(list(range(list1[0], list1[1]))).intersection(list(range(list2[0], list2[1]))):
             templist = list1 + list2
@@ -18,11 +18,14 @@ def inter(list1, list2):
     if list2 == []:
         return list1[1] - list1[0] + 1
 
-
- no_transpos.columns = ['N', 'name', 'start', 'stop']
+#from two files (intersect and no intersect), we making one 
+no_transpos = pd.read_table('need_for_transfer/no_transposon_chrY') 
+no_transpos.columns = ['N', 'name', 'start', 'stop']
 transpos = pd.read_table('need_for_transfer/transposon_chrY')
 summ_Y = transpos.append(no_transpos)
-summ_Y = summ_Y[['N', 'name', 'start', 'stop', 'intersect']].reset_index()
+summ_Y = summ_Y[['N', 'name', 'start', 'stop', 'intersect']].reset_index() 
+
+#get len of all regions
 def lenall(i):
 #     len_df = pd.read_csv('read_and_write_chr' + str(i)+'/read_and_write_chr'+str(i), sep="\t")
     len_df = pd.read_csv(i, sep="\t")
@@ -34,6 +37,7 @@ chrY = lenall(r'read_and_write_chrY')
 chr19 = lenall(r'read_and_write_chr19')
 lenchr = chr19 + chrY
 
+# get len of all nan regions
 def totalnans(i):
     nanslen = 0
 #     with open('total_nans_chr' + str(i)) as f:
@@ -47,8 +51,9 @@ def totalnans(i):
 chrY = totalnans('Y')
 chr19 = totalnans(19)
 lennan = chr19 + chrY
-total_nan_percent = lennan/lenchr
+total_nan_percent = lennan/lenchr # find percentage of nans in all our regions
 
+# form two files we make one dict, wich match animal id and it's group
 dic = collections.defaultdict(list)
 with open(r'group_related_taxonomy', 'r') as file:
     for i in file:
@@ -73,6 +78,7 @@ with open(r'chromodict', 'r') as file:
 for key, value in dic.items():
     a = [temp_dic[i] for i in value]
     dic[key] = a
+
 
 file_input = summ_Y
 ag = file_input.groupby('name')
@@ -112,21 +118,7 @@ summary
 
 nandict = {'repeats': 0, 'other_repeats': 0, 'nothing': 0}
 
-def inter(list1, list2):
-    if len(list1) == 2 and len(list2) == 2:
-        if set(list(range(list1[0], list1[1]))).intersection(list(range(list2[0], list2[1]))):
-            templist = list1 + list2
-            return max(templist) - min(templist) + 1
-        else:
-            if list1[0] != list1[1] and list2[0] != list2[1]:
-                return list1[1] - list1[0] + list2[1] - list2[0] + 2
-            else:
-                return list1[1] - list1[0] + list2[1] - list2[0] + 1
-    if list1 == []:
-        return list2[1] - list2[0] + 1
-    if list2 == []:
-        return list1[1] - list1[0] + 1
-    
+#  creating dict, to store how much nucleotides intersect with nothing, with transposons and with simple repeats
 file_input = summ_Y
 for j in file_input.index:
     if type(file_input.loc[j][4]) != float:
@@ -148,17 +140,20 @@ for j in file_input.index:
             summary[ids]['repeats'] += tr
             summary[ids]['other_repeats'] += sim_tr
             summary[ids]['nothing'] += lenght - inter(trs, sim_trs)
-            if lenght - inter(trs, sim_trs) < 0:
-                print("AAAA", list(file_input.loc[j]), trs, sim_trs, lenght, lenght - inter(trs, sim_trs))
     else:
         summary[ids]['nothing'] += file_input.loc[j]['stop'] - file_input.loc[j]['start']
 
+# making DataFrame from this dict
 for i in summary:
     if i == 'Human':
         dfs = pd.DataFrame({i : summary[i]}).transpose()
     else:
         dfs = dfs.append(pd.DataFrame({i : summary[i]}).transpose())
+# insted of quantity of nucleotides we find the percentage of nucleotides to length of all regions
 dfs = dfs.apply(lambda x: round(x/lenchr,4))
+dfs = dfs[['nothing','repeats','other_repeats']]
+
+# making histogramm from dataframe
 fig, ax = plt.subplots()
 fig.set_size_inches(6,6)
 
