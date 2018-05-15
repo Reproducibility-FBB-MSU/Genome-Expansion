@@ -4,7 +4,7 @@ import collections
 import matplotlib.pyplot as plt
 
 dic = collections.defaultdict(list)
-with open('/home/pig/Рабочий стол/I_HATE_THIS_WORLD', 'r') as file:
+with open('/home/pig/Рабочий стол/I_HATE_THIS_WORLD', 'r') as file: #searching start-stops
     for i in file:
         if re.search(':', i):
             temp = re.sub(r'\W', '', i)
@@ -21,13 +21,13 @@ for key, value in dic.items():
     a = [temp_dic[i] for i in value]
     dic[key] = a
 	
-def animal_group(ids, dic = dic):
+def animal_group(ids, dic = dic): #creating subsets according to the article
     for key, value in dic.items():
         for i in value:
             if i == ids:
                 return key 
 
-file_input = pd.read_table('/home/pig/Рабочий стол/test_inut') # сюда адресс файла аутпута
+file_input = pd.read_table('/home/pig/Рабочий стол/test_inut') # here's output file address
 ag = file_input.groupby('name')
 file_input.head()
 totallen = 0
@@ -36,7 +36,7 @@ for i in file_input.index:
 # totallen
 
 
-# нахождение суммарной длинны транспозонов +  по видам
+# te sum length +  sum subsets lenght 
 summ = 0
 transposons = collections.defaultdict(int)
 for i in file_input['intersect'].map(lambda x:re.sub(r'[\[\]\',]', '', re.sub(r'\], \[', '|', x)).split('|')):
@@ -46,7 +46,7 @@ for i in transposons.values():summ += i
 print(summ)
 # transposons
 
-# нахождение суммарного количества выравниваний для каждого возраста
+# sum alignmnet amount for each age
 total_len = {}
 temp = []
 for i in ag:
@@ -64,7 +64,7 @@ for i in summary.keys():
     summary[i] = {'repeats': 0, 'other_repeats': 0, 'nothing': 0}
 summary
 
-nandict = {'repeats': 0, 'other_repeats': 0, 'nothing': 0}
+nandict = {'repeats': 0, 'other_repeats': 0, 'nothing': 0} # creating 3 histogram groups
 for j in file_input.index:
     sim_tr, tr = 0, 0
     lenght = file_input.loc[j]['stop'] - file_input.loc[j]['start']
