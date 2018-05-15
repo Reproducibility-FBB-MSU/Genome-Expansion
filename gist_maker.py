@@ -37,7 +37,7 @@ import collections
 import matplotlib.pyplot as plt
 
 dic = collections.defaultdict(list)
-with open('group_related_taxonomy', 'r') as file:
+with open('group_related_taxonomy', 'r') as file: # input file with taxa divided into groups
     for i in file:
         if re.search(':', i):
             temp = re.sub(r'\W', '', i)
@@ -60,7 +60,7 @@ def animal_group(ids, dic = dic):
             if i == ids:
                 return key 
 
-# file_input = pd.read_table('test_inut') # here's outpute file address 
+file_input = pd.read_table('test_inut') # write input adress with whole clusters (transposal/simple-repepetitve/non repetetive at all) 
 file_input = summ_Y
 ag = file_input.groupby('name')
 file_input.head()
@@ -70,7 +70,7 @@ for i in file_input.index:
 # totallen
 
 
-# sum te length + sum species length
+# determening sum length of transposon-overlapped regions depending on type of transposon (SINE, LTE, etc)
 summ = 0
 transposons = collections.defaultdict(int)
 try:
@@ -94,9 +94,9 @@ for i in ag:
             string = []
 total_len
 
-summary = dic.copy() #creating 3 histogram subgroups for each column
+summary = dic.copy()
 for i in summary.keys():
-    summary[i] = {'repeats': 0, 'other_repeats': 0, 'nothing': 0}
+    summary[i] = {'repeats': 0, 'other_repeats': 0, 'nothing': 0} # 'summary' - dictionary for our hist with regions type
 summary
 
 nandict = {'repeats': 0, 'other_repeats': 0, 'nothing': 0}
@@ -130,7 +130,7 @@ for j in file_input.index:
     else:
         summary[ids]['nothing'] += file_input.loc[j]['stop'] - file_input.loc[j]['start']
 
-for i in summary:
+for i in summary: # making dataframe from summary for hist
     if i == 'Human':
         dfs = pd.DataFrame({i : summary[i]}).transpose()
     else:
@@ -140,7 +140,7 @@ dfs = dfs.drop(['nothing'])
 dfs
  
 
-fig, ax = plt.subplots()
+fig, ax = plt.subplots() # vusializing
 fig.set_size_inches(6,6)
 
 dfs.plot.bar(stacked=True, ax=ax);
