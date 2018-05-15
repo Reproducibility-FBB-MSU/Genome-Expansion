@@ -37,7 +37,7 @@ import collections
 import matplotlib.pyplot as plt
 
 dic = collections.defaultdict(list)
-with open('/home/pig/Рабочий стол/I_HATE_THIS_WORLD', 'r') as file:
+with open('group_related_taxonomy', 'r') as file:
     for i in file:
         if re.search(':', i):
             temp = re.sub(r'\W', '', i)
