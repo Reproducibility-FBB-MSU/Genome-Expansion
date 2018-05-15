@@ -20,7 +20,7 @@ def inter(list1, list2):
 
 
  no_transpos.columns = ['N', 'name', 'start', 'stop']
-transpos = pd.read_table('/home/pig/Загрузки/Telegram Desktop/need_for_transfer/transposon_chrY')
+transpos = pd.read_table('need_for_transfer/transposon_chrY')
 summ_Y = transpos.append(no_transpos)
 summ_Y = summ_Y[['N', 'name', 'start', 'stop', 'intersect']].reset_index()
 def lenall(i):
@@ -30,14 +30,14 @@ def lenall(i):
     len_s = len_df['stop'] - len_df['start']
     return len_s.sum(axis = 0)
 
-chrY = lenall(r'/home/pig/Загрузки/Telegram Desktop/read_and_write_chrY')
-chr19 = lenall(r'/home/pig/Загрузки/Telegram Desktop/read_and_write_chr19')
+chrY = lenall(r'read_and_write_chrY')
+chr19 = lenall(r'read_and_write_chr19')
 lenchr = chr19 + chrY
 
 def totalnans(i):
     nanslen = 0
 #     with open('total_nans_chr' + str(i)) as f:
-    with open(r'/home/pig/Загрузки/Telegram Desktop/total_nans_chr' + str(i)) as f:
+    with open(r'total_nans_chr' + str(i)) as f:
         data = f.readlines()
     for i in data:
         nanlen = int(re.search(r'is\s\d+', i).group()[3:])
@@ -50,7 +50,7 @@ lennan = chr19 + chrY
 total_nan_percent = lennan/lenchr
 
 dic = collections.defaultdict(list)
-with open(r'/home/pig/Загрузки/Telegram Desktop/group_related_taxonomy', 'r') as file:
+with open(r'group_related_taxonomy', 'r') as file:
     for i in file:
         if re.search(':', i):
             temp = re.sub(r'\W', '', i)
@@ -65,7 +65,7 @@ def animal_group(ids, dic = dic):
             
             
 temp_dic = collections.defaultdict(list)      
-with open(r'/home/pig/Загрузки/Telegram Desktop/chromodict', 'r') as file:
+with open(r'chromodict', 'r') as file:
     for i in file:
         if not re.match('[=|\n]', i):
             a = re.sub('  .*', '', re.sub(r'  [^/]*/', '!@!', i))[:-1].split('!@!')
