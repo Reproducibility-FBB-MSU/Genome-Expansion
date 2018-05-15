@@ -60,7 +60,7 @@ def animal_group(ids, dic = dic):
             if i == ids:
                 return key 
 
-# file_input = pd.read_table('/home/pig/Рабочий стол/test_inut') # сюда адресс файла аутпута
+# file_input = pd.read_table('/home/pig/Рабочий стол/test_inut') # here's outpute file address 
 file_input = summ_Y
 ag = file_input.groupby('name')
 file_input.head()
@@ -70,7 +70,7 @@ for i in file_input.index:
 # totallen
 
 
-# нахождение суммарной длинны транспозонов +  по видам
+# sum te length + sum species length
 summ = 0
 transposons = collections.defaultdict(int)
 try:
@@ -81,7 +81,7 @@ try:
 except TypeError:
     pass
 
-# нахождение суммарного количества выравниваний для каждого возраста
+# sum amount of alignmets for each age
 total_len = {}
 temp = []
 for i in ag:
@@ -94,7 +94,7 @@ for i in ag:
             string = []
 total_len
 
-summary = dic.copy()
+summary = dic.copy() #creating 3 histogram subgroups for each column
 for i in summary.keys():
     summary[i] = {'repeats': 0, 'other_repeats': 0, 'nothing': 0}
 summary
