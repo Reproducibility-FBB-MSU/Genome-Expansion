@@ -45,7 +45,7 @@ with open('/home/pig/Рабочий стол/I_HATE_THIS_WORLD', 'r') as file:
             dic[temp] += [re.sub(r'  +', '', i[:-1])]
 			
 temp_dic = collections.defaultdict(list)
-with open('/home/pig/Рабочий стол/chromodict', 'r') as file:
+with open('chromodict', 'r') as file:
     for i in file:
         if not re.match('[=|\n]', i):
             a = re.sub('  .*', '', re.sub(r'  [^/]*/', '!@!', i))[:-1].split('!@!')
@@ -60,7 +60,7 @@ def animal_group(ids, dic = dic):
             if i == ids:
                 return key 
 
-# file_input = pd.read_table('/home/pig/Рабочий стол/test_inut') # here's outpute file address 
+# file_input = pd.read_table('test_inut') # here's outpute file address 
 file_input = summ_Y
 ag = file_input.groupby('name')
 file_input.head()
@@ -100,16 +100,25 @@ for i in summary.keys():
 summary
 
 nandict = {'repeats': 0, 'other_repeats': 0, 'nothing': 0}
+def inter(list1, list2):
+    if set(list(range(list1[0], list1[1]))).intersection(list(range(list2[0], list2[1]))):
+        templist = list1 + list2
+        return max(templist) - min(templist) + 1
+    else:
+        return list1[1] - list1[0] + list2[1] - list2[0] + 2
+
 for j in file_input.index:
     if type(file_input.loc[j][4]) != float:
         sim_tr, tr = 0, 0
         lenght = file_input.loc[j]['stop'] - file_input.loc[j]['start']
         for i in re.sub(r'[\[\]\',]', '', re.sub(r'\], \[', '|', file_input.loc[j]['intersect'])).split('|'):
-            print(i)
-            if i.split(' ')[2]:
+#             print(i)
+            if i.split(' ')[2] != 'trf':
                 tr += int(i.split(' ')[1]) - int(i.split(' ')[0])
+                trs = [int(i.split(' ')[0]), int(i.split(' ')[1])]
             else:
                 sim_tr += int(i.split(' ')[1]) - int(i.split(' ')[0])
+                sim_trs = [int(i.split(' ')[0]), int(i.split(' ')[1])]
         if str(file_input['name'][j]) != 'nan' and str(file_input['name'][j]) != 'NaN':
             ids = re.match(r'[^\.]+', file_input['name'][j]).group()
             for key, value in dic.items():
@@ -117,7 +126,7 @@ for j in file_input.index:
                     ids = key
             summary[ids]['repeats'] += tr
             summary[ids]['other_repeats'] += sim_tr
-            summary[ids]['nothing'] += lenght - tr - sim_tr
+            summary[ids]['nothing'] += lenght - inter(trs, sim_trs)
     else:
         summary[ids]['nothing'] += file_input.loc[j]['stop'] - file_input.loc[j]['start']
 
